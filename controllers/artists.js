@@ -1,75 +1,75 @@
 var express = require("express");
 var router = express.Router();
 var DB = require("../db/connection");
-var Artist = DB.models.Artist;
+var candidate = DB.models.candidate;
 
 function error(response, message){
   response.status(500);
   response.json({error: message})
 }
 
-router.get("/artists", function(req, res){
-  Artist.findAll().then(function(artists){
-    res.render("artists/index", {artists: artists});
+router.get("/candidates", function(req, res){
+  candidate.findAll().then(function(candidates){
+    res.render("candidates/index", {candidates: candidates});
   });
 });
 
-router.get("/artists/new", function(req, res){
-  res.render("artists/new");
+router.get("/candidates/new", function(req, res){
+  res.render("candidates/new");
 });
 
-router.post("/artists", function(req, res){
-  Artist.create(req.body).then(function(artist){
-    res.redirect("/artists/" + artist.id)
+router.post("/candidates", function(req, res){
+  candidate.create(req.body).then(function(candidate){
+    res.redirect("/candidates/" + candidate.id)
   });
 });
 
-router.get("/artists/:id", function(req, res){
-  var artist;
-  Artist.findById(req.params.id)
+router.get("/candidates/:id", function(req, res){
+  var candidate;
+  candidate.findById(req.params.id)
   .then(function(a){
     if(!a) return error(res, "not found");
-    Artist.sing();
+    candidate.sing();
     a.shout();
-    artist = a;
-    return artist.getSongs()
+    candidate = a;
+    return candidate.getSongs()
   })
-  .then(function(songs){
-    res.render("artists/show", {artist: artist, songs: songs});
+  .then(function(lies){
+    res.render("candidates/show", {candidate: candidate, lies: lies});
   });
 });
 
-router.get("/artists/:id/edit", function(req, res){
-  Artist.findById(req.params.id).then(function(artist){
-    if(!artist) return error(res, "not found");
-    res.render("artists/edit", {artist: artist});
+router.get("/candidates/:id/edit", function(req, res){
+  candidate.findById(req.params.id).then(function(candidate){
+    if(!candidate) return error(res, "not found");
+    res.render("candidates/edit", {candidate: candidate});
   });
 });
 
-router.put("/artists/:id", function(req, res){
-  var updatedArtist, songs;
-  Artist.findById(req.params.id)
-  .then(function(artist){
-    if(!artist) return error(res, "not found");
-    return artist.updateAttributes(req.body)
+router.put("/candidates/:id", function(req, res){
+  var updatedArtist, lies;
+  candidate.findById(req.params.id)
+  .then(function(candidate){
+    if(!candidate) return error(res, "not found");
+    return candidate.updateAttributes(req.body)
   })
-  .then(function(artist){
-    updatedArtist = artist;
+  .then(function(candidate){
+    updatedArtist = candidate;
     return updatedArtist.getSongs()
   })
-  .then(function(songs){
-    res.render("artists/show", {artist: updatedArtist, songs: songs});
+  .then(function(lies){
+    res.render("candidates/show", {candidate: updatedArtist, lies: lies});
   });
 });
 
-router.delete("/artists/:id", function(req, res){
-  Artist.findById(req.params.id)
-  .then(function(artist){
-    if(!artist) return error(res, "not found");
-    return artist.destroy()
+router.delete("/candidates/:id", function(req, res){
+  candidate.findById(req.params.id)
+  .then(function(candidate){
+    if(!candidate) return error(res, "not found");
+    return candidate.destroy()
   })
   .then(function(){
-    res.redirect("/artists")
+    res.redirect("/candidates")
   });
 });
 

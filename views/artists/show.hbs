@@ -1,14 +1,14 @@
-<h2>{{artist.name}} <a href="/artists/{{artist.id}}/edit">(edit)</a></h2>
-<h4>{{artist.nationality}}</h4>
+<h2>{{candidate.name}} <a href="/candidates/{{candidate.id}}/edit">(edit)</a></h2>
+<h4>{{candidate.nationality}}</h4>
 
-<img class='artist-photo' src="{{artist.photoUrl}}">
+<img class='candidate-photo' src="{{candidate.photoUrl}}">
 
-<h3>Songs</h3>
+<h3>lies</h3>
 <ul>
-  {{#each songs}}
-    <!-- build the list element for each song -->
+  {{#each lies}}
+    <!-- build the list element for each lie -->
     <li>
-      <a href="/songs/{{id}}">
+      <a href="/lies/{{id}}">
         {{title}} ({{album}})
       </a>
     </li>

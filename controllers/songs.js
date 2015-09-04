@@ -1,93 +1,93 @@
 var express = require("express");
 var router = express.Router();
 var models = require("../db/connection").models;
-var Song = models.Song;
-var Artist = models.Artist;
+var lie = models.lie;
+var candidate = models.candidate;
 
 function error(response, message){
   response.status(500);
   response.json({error: message})
 }
 
-function songsWithArtistNames(songs, artists){
+function liesWithArtistNames(lies, candidates){
   var s, a;
-  for(s in songs){
-    for(a in artists){
-      if(artists[a].id == songs[s].artistId){
-        songs[s].artistName = artists[a].name;
+  for(s in lies){
+    for(a in candidates){
+      if(candidates[a].id == lies[s].candidateId){
+        lies[s].candidateName = candidates[a].name;
         break;
       }
     }
   }
-  return songs;
+  return lies;
 }
 
-router.get("/songs", function(req, res){
-  var songs;
-  Song.findAll()
+router.get("/lies", function(req, res){
+  var lies;
+  lie.findAll()
   .then(function(s){
-    songs = s;
-    return Artist.findAll()
+    lies = s;
+    return candidate.findAll()
   })
-  .then(function(artists){
-    res.render("songs/index", {songs: songsWithArtistNames(songs, artists)});
+  .then(function(candidates){
+    res.render("lies/index", {lies: liesWithArtistNames(lies, candidates)});
   });
 });
 
-router.get("/songs/new", function(req, res){
-  res.render("songs/new");
+router.get("/lies/new", function(req, res){
+  res.render("lies/new");
 })
 
-router.post("/songs", function(req, res){
-  if(!req.body.artistId) return error(res, "Artist not found");
-  Song.create(req.body).then(function(song){
-    res.redirect("/songs/" + song.id)
+router.post("/lies", function(req, res){
+  if(!req.body.candidateId) return error(res, "candidate not found");
+  lie.create(req.body).then(function(lie){
+    res.redirect("/lies/" + lie.id)
   });
 });
 
-router.get("/songs/:id", function(req, res){
-  var song;
-  Song.findById(req.params.id)
+router.get("/lies/:id", function(req, res){
+  var lie;
+  lie.findById(req.params.id)
   .then(function(s){
     if(!s) return error(res, "not found");
-    song = s;
-    return song.getArtist();
+    lie = s;
+    return lie.getArtist();
   })
-  .then(function(artist){
-    song.artistName = artist.name;
-    res.render("songs/show", {song: song});
+  .then(function(candidate){
+    lie.candidateName = candidate.name;
+    res.render("lies/show", {lie: lie});
   });
 });
 
-router.get("/songs/:id/edit", function(req, res){
-  Song.findById(req.params.id).then(function(song){
-    if(!song) return error(res, "not found");
-    res.render("songs/edit", {song: song});
+router.get("/lies/:id/edit", function(req, res){
+  lie.findById(req.params.id).then(function(lie){
+    if(!lie) return error(res, "not found");
+    res.render("lies/edit", {lie: lie});
   });
 });
 
-router.put("/songs/:id", function(req, res){
-  var song;
-  if(!req.body.artistId) return error(res, "Artist not found");
-  Song.findById(req.params.id)
+router.put("/lies/:id", function(req, res){
+  var lie;
+  if(!req.body.candidateId) return error(res, "candidate not found");
+  lie.findById(req.params.id)
   .then(function(s){
     if(!s) return error(res, "not found");
-    song = s;
-    return song.updateAttributes(req.body);
+    lie = s;
+    return lie.updateAttributes(req.body);
   })
   .then(function(updatedSong){
-    res.redirect("/songs/" + updatedSong.id);
+    res.redirect("/lies/" + updatedSong.id);
   });
 });
 
-router.delete("/songs/:id", function(req, res){
-  Song.findById(req.params.id)
-  .then(function(song){
-    if(!song) return error(res, "not found");
-    return song.destroy();
+router.delete("/lies/:id", function(req, res){
+  lie.findById(req.params.id)
+  .then(function(lie){
+    if(!lie) return error(res, "not found");
+    return lie.destroy();
   })
   .then(function(){
-    res.redirect("/songs");
+    res.redirect("/lies");
   });
 });
 

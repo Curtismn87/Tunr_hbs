@@ -1,25 +1,25 @@
 var DB = require("./connection");
 var Seeds = {
-  artists: require("./artist_data"),
-  songs: require("./song_data")
+  candidates: require("./candidate_data"),
+  lies: require("./lie_data")
 }
 
-DB.models.Artist.bulkCreate(Seeds.artists)
+DB.models.candidate.bulkCreate(Seeds.candidates)
 .then(function(){
-  return DB.models.Artist.findAll();
+  return DB.models.candidate.findAll();
 })
-.then(function(artists){
-  var a, artist, s, song, songs, output = [];
-  for(a = 0; a < artists.length; a++){
-    artist = artists[a];
-    songs = Seeds.songs[artist.name];
-    for(s = 0; s < songs.length; s++){
-      song = songs[s];
-      song.artistId = artist.id;
-      output.push(song);
+.then(function(candidates){
+  var a, candidate, s, lie, lies, output = [];
+  for(a = 0; a < candidates.length; a++){
+    candidate = candidates[a];
+    lies = Seeds.lies[candidate.name];
+    for(s = 0; s < lies.length; s++){
+      lie = lies[s];
+      lie.candidateId = candidate.id;
+      output.push(lie);
     }
   }
-  return DB.models.Song.bulkCreate(output);
+  return DB.models.lie.bulkCreate(output);
 })
 .then(function(){
   process.exit();

@@ -1,5 +1,5 @@
 module.exports = function(sequelize, Sequelize){
-  var model = sequelize.define("artist", {
+  var model = sequelize.define("candidate", {
     name: Sequelize.STRING,
     photoUrl: Sequelize.STRING,
     nationality: Sequelize.STRING
